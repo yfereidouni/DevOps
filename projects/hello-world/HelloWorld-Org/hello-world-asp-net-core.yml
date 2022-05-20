@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  labels:
+    app.kubernetes.io/name: load-balancer-example
+  name: hello-world-asp-net-core
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: load-balancer-example
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: load-balancer-example
+    spec:
+      containers:
+      - image: yhub/hello-world-asp-net-core:0
+        name: hello-world-asp-net-core
+        ports:
+        - containerPort: 5000

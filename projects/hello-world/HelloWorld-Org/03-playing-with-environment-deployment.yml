@@ -1,0 +1,45 @@
+trigger:
+- master
+
+# strategy:
+#   matrix:
+#     linux:
+#       operatingSystem: 'ubuntu-latest'
+#     mac:
+#       operatingSystem: 'macos-latest'
+
+pool:
+  name: default
+
+stages:
+- stage: Build
+  jobs:
+  - job: BuildJob
+    steps:
+      - script: echo "Do the Build"
+
+- stage: DevDeploy
+  jobs:
+  - job: DevJob
+    steps:
+      - script: echo "Start Dev Deploy"
+  - deployment: DevDeployeJob
+    environment: Dev
+    strategy:
+     runOnce:
+       deploy:
+         steps:
+           - script: echo "Deploy to Dev" 
+
+- stage: QaDeploy
+  jobs:
+  - job: QaJob
+    steps:
+      - script: echo "Start QA Deploy"
+  - deployment: QADeployeJob
+    environment: QA
+    strategy:
+     runOnce:
+       deploy:
+         steps:
+           - script: echo "Deploy to QA" 

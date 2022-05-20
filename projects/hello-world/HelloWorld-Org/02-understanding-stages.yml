@@ -1,0 +1,79 @@
+trigger:
+- master
+
+pool:
+  name: default
+
+ #Pipeline > Stages > Jobs > Tasks (Steps)
+
+stages:
+- stage: Build
+  variables:
+   environment: Build
+  jobs:
+  - job: firstjob
+    steps:
+    - script: echo $(environment) firstjob!
+    - script: echo $(Build.BuildNumver)
+    - script: echo $(Build.BuildId)
+    - script: echo $(Build.SourceBranchName)
+    - script: echo $(Build.SourceDirectory)
+    - script: echo $(System.DefaultWorkingDirectory)
+    - script: echo ls -R $(System.DefaultWorkingDirectory)
+    - script: echo $(Build.ArtifactStagingDirectory)
+
+    - task: CopyFiles@2
+      inputs:
+        SourceFolder: '$(System.DefaultWorkingDirectory)'
+        Contents: |
+          **/*.yml
+          **/*.tf
+        TargetFolder: '$(Build.ArtifactStagingDirectory)'
+
+    - task: PublishBuildArtifacts@1
+      inputs:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+        ArtifactName: 'drop'
+        publishLocation: 'Container'
+
+#   - job: secondjob
+#     steps:
+#     - script: echo $(environment) secondjob!
+  
+# - stage: DevelopmentDeploy
+#   dependsOn: Build
+#   variables:
+#    environment: Development
+#   jobs:
+#   - job: firstjob
+#     steps:
+#     - script: echo $(environment)Deploy firstjob!
+#   - job: secondjob
+#     steps:
+#     - script: echo $(environment)Deploy secondjob!
+
+# - stage: QualityDeploy
+#   dependsOn: Build  
+#   variables:
+#    environment: Quality
+#   jobs:
+#   - job: firstjob
+#     steps:
+#     - script: echo $(environment)Deploy firstjob!
+#   - job: secondjob
+#     steps:
+#     - script: echo $(environment)Deploy secondjob!
+
+# - stage: ProductionDeploy
+#   dependsOn: 
+#   - DevelopmentDeploy
+#   - QualityDeploy
+#   variables:
+#    environment: Production
+#   jobs:
+#   - job: firstjob
+#     steps:
+#     - script: echo $(environment)Deploy firstjob!
+#   - job: secondjob
+#     steps:
+#     - script: echo $(environment)Deploy secondjob!

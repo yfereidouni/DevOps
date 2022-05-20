@@ -1,0 +1,37 @@
+trigger:
+- master
+
+pool:
+  name: default
+
+resources:
+- repo: self
+
+variables:
+  tag: '$(Build.BuildId)'
+
+stages:
+- stage: Build
+  displayName: Build image
+  jobs:
+  - job: Build
+    displayName: Build
+    pool:
+      vmImage: ubuntu-latest
+
+    # steps:
+    # - task: Docker@2
+    #   inputs:
+    #     containerRegistry: 'yhub'
+    #     repository: 'yhub/hello-world-devops'
+    #     command: 'buildAndPush'
+    #     Dockerfile: '**/Dockerfile'
+    #     tags: '$(tag)'
+    
+    steps:
+    - task: Docker@2
+      inputs:
+        containerRegistry: 'yhub'
+        repository: 'yhub/hello-world-asp-net-core'
+        command: 'buildAndPush'
+        Dockerfile: '**/Dockerfile'
